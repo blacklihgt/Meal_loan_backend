@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+    <link rel="icon" href="/favicon.ico" />
+
+<head>
+    <title>User Validation</title>
+    <style>
+        body { font-family: Arial; max-width: 500px; margin: 40px auto; }
+        input, button { width: 100%; padding: 10px; margin-top: 8px; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<h2>Submit Loan Information</h2>
+
+<!-- STEP 1: USER CHECK FORM -->
+<form id="checkForm">
+    <input type="text" id="idCheck" placeholder="Enter ID" required>
+    <input type="number" id="amountCheck" placeholder="Amount" required>
+    <button type="submit">Submit</button>
+</form>
+
+<!-- STEP 2: REGISTRATION FORM (HIDDEN UNTIL NEEDED) -->
+<div id="registerSection" >
+    <h3>ID not found – Register User</h3>
+    <form id="registerForm">
+        <input type="text" id="regName" placeholder="Full_Name" required>
+        <input type="number" id="regContact" placeholder="Phone_Number" required>
+        <input type="text" id="regId" placeholder="Enter ID" required>
+        <button type="submit">Register</button>
+    </form>
+</div>
+
+<div id="result"></div>
+<div id="error" style="color:red"></div>
+
+
+<script>
+document.getElementById('checkForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  
+  const id = document.getElementById('idCheck').value;
+  const amount = document.getElementById('amountCheck').value;
+  
+  try {
+    const response = await fetch('http://127.0.0.1:3000/submitfrontend', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({ id, amount})
+    });
+    
+     if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  //Get the raw response text
+  const responseText = await response.text();
+
+    //const data = await response.json();
+    console.log('Raw response:', responseText);
+
+    let data;
+
+      // Check if response contains code blocks
+  if (responseText.includes('```json')) {
+    // Extract JSON from code blocks
+    const jsonMatch = responseText.match(/```json\n([\s\S]*?)\n```/);
+    
+    if (jsonMatch && jsonMatch[1]) {
+      // Parse the extracted JSON
+      data = JSON.parse(jsonMatch[1].trim());
+    } else {
+      // Try cleaning up the response
+      const cleaned = responseText.replace(/```json\n?|```/g, "").trim();
+      data = JSON.parse(cleaned);
+    }
+  } else {
+    // Parse directly if no code blocks
+    data = JSON.parse(responseText);
+  }
+  
+  console.log('Parsed data:', data);
+
+    
+    if (data.status === "exists") {
+      alert("User exists: " + data.user.name + ".Data updated successfully");
+    } else if (data.status === "not_found") {
+      alert("User not found");
+    } else {
+      alert("Status: " + data.status);
+      console.log(data.status)
+    }
+  } catch (error) {
+    
+    alert('Error checking user');
+  }
+});
+</script>
+
+<script>
+// STEP 2: REGISTRATION
+document.getElementById("registerForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+      const name = document.getElementById("regName").value;
+      const amount = document.getElementById("regContact").value;
+      const id = document.getElementById("regId").value
+
+      try{
+
+      //const result = await response.json();
+      const regresponse = await fetch("http://127.0.0.1:3000/register", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({name, amount, id})
+      
+    });
+    
+    
+  //Get the raw response text
+  const regresponseText = await regresponse.text();
+
+    //const data = await response.json();
+    console.log('Raw response:', regresponseText);
+ ```
+
+    if (response.ok) {
+        document.getElementById("result").innerText = "User registered!";
+        
+    } else {
+        document.getElementById("error").innerText = "Registration failed!";
+    }
+  
+```
+      } catch (error) {
+
+    
+    alert('Error checking user');
+
+      }
+
+});
+
+</script>
+
+
+</body>
+</html>
