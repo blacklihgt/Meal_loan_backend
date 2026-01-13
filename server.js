@@ -4,12 +4,23 @@ const mysql = require('mysql2');
 const bcrypt = require('bcryptjs');
 const morgan = require('morgan');
 const cors = require('cors');
+const { Sequelize } = require('sequelize');
+
 require('dotenv').config();
 
-const jwt = require('jsonwebtoken');
-const app = express();
-const PORT = 3307;
-const JWT_SECRET_KEY = process.env.JWT_SECRET; //|| 'your-super-secret-key'; // Use env var!
+const connection = mysql.createConnection({
+  host: process.env.DB_HOST || 'myapp-mysql',  // service name
+  port: 3306,
+  user: process.env.DB_USER || 'appuser',
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME || 'myapp_db' 
+
+});
+
+//const jwt = require('jsonwebtoken');
+//const app = express();
+//const PORT = 3307;
+//const JWT_SECRET_KEY = process.env.JWT_SECRET; //|| 'your-super-secret-key'; // Use env var!
 
 // Middleware
 app.use(cors({ origin: ['http://localhost:5173', 'https://meal-loan-react.vercel.app'] })); // Adjust to your frontend URL
@@ -19,15 +30,15 @@ app.use(express.json());
 
 
 // MySQL Connection Pool (better for production)
-const pool = mysql.createPool({
-  host: 'localhost',         // or your MySQL host
-  user: 'root',              // your MySQL user
-  password: '@Roykibet012',  // your MySQL password
-  database: 'pilot',
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-});
+//const pool = mysql.createPool({
+  //host: 'localhost',         // or your MySQL host
+  //user: 'root',              // your MySQL user
+  //password: '@Roykibet012',  // your MySQL password
+  //database: 'pilot',
+  //waitForConnections: true,
+  //connectionLimit: 10,
+  //queueLimit: 0
+//});
 
 const db = pool.promise(); // Enables async/await
 
