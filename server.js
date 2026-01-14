@@ -1,33 +1,90 @@
-const express = require('express');
-const mysql = require('mysql2');
+//const express = require('express');
+//const mysql = require('mysql2');
+//const bcrypt = require('bcryptjs');
+//const morgan = require('morgan');
+//const cors = require('cors');
+//const { Sequelize, DataTypes } = require('sequelize');
 
-const bcrypt = require('bcryptjs');
-const morgan = require('morgan');
-const cors = require('cors');
-const { Sequelize } = require('sequelize');
+import express from 'express';
+import mysql2 from 'mysql2';
+import bcrypt from 'bcryptjs';
+import morgan from 'morgan';
+import cors from 'cors';
+import {Sequelize, DataTypes} from 'sequelize';
+import dotenv from 'dotenv';
+dotenv.config();
 
-require('dotenv').config();
-
-const connection = mysql.createConnection({
-  host: process.env.DB_HOST || 'myapp-mysql',  // service name
-  port: 3306,
-  user: process.env.DB_USER || 'appuser',
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME || 'myapp_db' 
-
-});
+//require('dotenv').config();
 
 //const jwt = require('jsonwebtoken');
-//const app = express();
+
 //const PORT = 3307;
 //const JWT_SECRET_KEY = process.env.JWT_SECRET; //|| 'your-super-secret-key'; // Use env var!
+
+const app = express();
 
 // Middleware
 app.use(cors({ origin: ['http://localhost:5173', 'https://meal-loan-react.vercel.app'] })); // Adjust to your frontend URL
 app.use(morgan('dev'));
 app.use(express.json());
 
+const sequelize = new Sequelize(
+  process.env.DB_NAME || 'myapp_db',
+  process.env.DB_USER || 'appuser',
+  process.env.DB_PASSWORD,
 
+  {
+    host: process.env.DB_HOST || 'myapp-mysql',
+    port: 3306,
+    dialect: 'mysql',
+
+    //Optional but recommended
+        logging: false, // disable SQL logs
+    pool: {
+      max: 10,
+      min: 0,
+      acquire: 30000,
+      idle: 10000
+    }
+  }
+);
+
+export default sequelize;
+
+//Test the connection
+(async () => {
+  try {
+    await sequelize.authenticate();
+    console.log('Sequelize connected to MySQL');
+  } catch (error) {
+    console.error('Unable to connect:', error);
+  }
+})();
+
+const Users = sequelize.define('User', {
+  id_number: {type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true},
+  password: {type: DataTypes.STRING },
+  date_created: {type: DataTypes.DATE}
+})
+//module.exports = Users;
+
+
+const Loans = sequelize.define('Loans', {
+  date_created: {type: DataTypes.DATE},
+  amount: {type: DataTypes.NUMBER},
+
+  id_number: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: 'Clients',
+      key: 'id_no'
+    }
+  }
+
+
+})
+
+await sequelize.sync({ alter: true});//dev only
 
 // MySQL Connection Pool (better for production)
 //const pool = mysql.createPool({
@@ -40,7 +97,7 @@ app.use(express.json());
   //queueLimit: 0
 //});
 
-const db = pool.promise(); // Enables async/await
+//const db = pool.promise(); // Enables async/await
 
 // Test connection on startup
 //db.query('SELECT 1')
