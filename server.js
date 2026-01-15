@@ -34,7 +34,7 @@ const sequelize = new Sequelize(
   process.env.DB_PASSWORD,
 
   {
-    host: process.env.DB_HOST || 'mysql:8',
+    host: process.env.DB_HOST || 'mysql-8-msqq',
     port: 3306,
     dialect: 'mysql',
 
