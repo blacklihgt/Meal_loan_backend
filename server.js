@@ -58,7 +58,7 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
   }
 })();
 
-const Users = sequelize.define('User', {
+const Users = sequelize.define('Users', {
   id_number: {type: DataTypes.INTEGER, primaryKey: true, unique:true},
   password: {type: DataTypes.STRING },
   date_created: {type: DataTypes.DATE}
@@ -119,7 +119,7 @@ async function createDefaultUser() {
    try {
     await sequelize.query(
       `
-      INSERT INTO user (id_number, password)
+      INSERT INTO users (id_number, password)
       VALUES (:id_number, :password)
       ON CONFLICT (id_number) DO NOTHING
       `,
@@ -150,7 +150,7 @@ app.post('/login', async (req, res) => {
 
   try {
 const [rows] = await sequelize.query(
-  'SELECT * FROM "user" WHERE id_number = :idNumber',
+  'SELECT * FROM "users" WHERE id_number = :idNumber',
   {
     replacements: { idNumber },
     type: Sequelize.QueryTypes.SELECT,
