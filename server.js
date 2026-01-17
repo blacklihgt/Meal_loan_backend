@@ -29,8 +29,8 @@ app.use(morgan('dev'));
 app.use(express.json());
 
 const sequelize = new Sequelize(
-  process.env.DB_NAME || 'myapp_db',
-  process.env.DB_USER || 'appuser',
+  process.env.DB_NAME || 'pilot_zt0x',
+  process.env.DB_USER || 'admin',
   process.env.DB_PASSWORD,
 
   {
