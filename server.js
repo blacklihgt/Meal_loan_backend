@@ -28,28 +28,25 @@ app.use(cors({ origin: ['http://localhost:5173', 'https://meal-loan-react.vercel
 app.use(morgan('dev'));
 app.use(express.json());
 
-const sequelize = new Sequelize(
-  process.env.DB_NAME || 'pilot_zt0x',
-  process.env.DB_USER || 'admin',
-  process.env.DB_PASSWORD,
-
-  {
-    host: process.env.DB_HOST || 'dpg-d5kb0i4oud1c73eflcng-a',
-    port: 5432,
-    dialect: 'postgres',
-
-    //Optional but recommended
-        logging: false, // disable SQL logs
-    pool: {
-      max: 10,
-      min: 0,
-      acquire: 30000,
-      idle: 10000
+// Use the full DATABASE_URL that Render provides
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  dialect: 'postgres',
+  logging: false,                  // disable SQL query logs in production
+  dialectOptions: {
+    // Render requires SSL for both internal and external connections
+    ssl: {
+      require: true,
+      rejectUnauthorized: false   // needed because Render uses a self-signed cert chain
     }
+  },
+  pool: {
+    max: 10,
+    min: 0,
+    acquire: 30000,
+    idle: 10000
   }
-);
+});
 
-export default sequelize;
 
 //Test the connection
 (async () => {
@@ -105,6 +102,8 @@ await sequelize.sync({ alter: true});//dev only
   //.catch(err => console.error('MySQL connection failed:', err));
 
 // Optional: Create default admin user on startup (for MVP)
+
+```
 async function createDefaultUser() {
   const id_number = '36933538';
   const plainPassword = 'password123';
@@ -121,7 +120,7 @@ async function createDefaultUser() {
   }
 }
 createDefaultUser();
-
+```
 // ==================== LOGIN ====================
 app.post('/login', async (req, res) => {
   const { idNumber, password } = req.body;
