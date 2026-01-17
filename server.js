@@ -59,7 +59,7 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
 })();
 
 const Users = sequelize.define('User', {
-  id_number: {type: DataTypes.INTEGER, primaryKey: true},
+  id_number: {type: DataTypes.INTEGER, primaryKey: true, unique:true},
   password: {type: DataTypes.STRING },
   date_created: {type: DataTypes.DATE}
 })
@@ -111,7 +111,6 @@ await sequelize.sync({ alter: true});//dev only
 
 // Optional: Create default admin user on startup (for MVP)
 
-```
 async function createDefaultUser() {
   const id_number = '36933538';
   const plainPassword = 'password123';
@@ -119,16 +118,22 @@ async function createDefaultUser() {
 
   try {
     await db.query(
-      'INSERT IGNORE INTO users (id_number, password) VALUES (?, ?)',
+      `
+      INSERT INTO users (id_number, password)
+      VALUES ($1, $2)
+      ON CONFLICT (id_number) DO NOTHING
+      `,
       [id_number, hashedPassword]
     );
-    console.log('Default admin created (or already exists): admin@example.com / password123');
+
+    console.log('Default user created (or already exists)');
   } catch (err) {
     console.error('Error creating default user:', err);
   }
 }
+
 createDefaultUser();
-```
+
 // ==================== LOGIN ====================
 app.post('/login', async (req, res) => {
   const { idNumber, password } = req.body;
