@@ -116,14 +116,19 @@ async function createDefaultUser() {
   const plainPassword = 'password123';
   const hashedPassword = bcrypt.hashSync(plainPassword, 10);
 
-  try {
-    await db.query(
+   try {
+    await sequelize.query(
       `
       INSERT INTO users (id_number, password)
-      VALUES ($1, $2)
+      VALUES (:id_number, :password)
       ON CONFLICT (id_number) DO NOTHING
       `,
-      [id_number, hashedPassword]
+      {
+        replacements: {
+          id_number,
+          password: hashedPassword,
+        },
+      }
     );
 
     console.log('Default user created (or already exists)');
@@ -287,7 +292,8 @@ app.get('/api/loans', authenticateJWT, async (req, res) => {
 });
 
 // Start server
+const PORT = process.env.PORT || 5432;
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on render${PORT}`);
   console.log(`Login: admin@example.com / password123`);
 });
