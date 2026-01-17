@@ -117,7 +117,7 @@ async function createDefaultUser() {
    try {
     await sequelize.query(
       `
-      INSERT INTO "Users" (id_number, password)
+      INSERT INTO Users (id_number, password)
       VALUES (:id_number, :password)
       ON CONFLICT (id_number) DO NOTHING
       `,
