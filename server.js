@@ -135,7 +135,7 @@ await sequelize.sync({ alter: true});//dev only
   //}
 //}
 
-createDefaultUser();
+//createDefaultUser();
 
 // ==================== LOGIN ====================
 app.post('/login', async (req, res) => {
