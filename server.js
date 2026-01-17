@@ -302,5 +302,5 @@ app.get('/api/loans', authenticateJWT, async (req, res) => {
 const PORT = process.env.PORT || 5432;
 app.listen(PORT, () => {
   console.log(`Server running on render${PORT}`);
-  console.log(`Login: admin@example.com / password123`);
+  //console.log(`Login: admin@example.com / password123`);
 });
