@@ -89,53 +89,7 @@ const clients = sequelize.define('Clients', {
 
 await sequelize.sync({ alter: true});//dev only
 
-// MySQL Connection Pool (better for production)
-//const pool = mysql.createPool({
-  //host: 'localhost',         // or your MySQL host
-  //user: 'root',              // your MySQL user
-  //password: '@Roykibet012',  // your MySQL password
-  //database: 'pilot',
-  //waitForConnections: true,
-  //connectionLimit: 10,
-  //queueLimit: 0
-//});
 
-//const db = pool.promise(); // Enables async/await
-
-// Test connection on startup
-//db.query('SELECT 1')
-  //.then(() => console.log('Connected to MySQL database'))
-  //.catch(err => console.error('MySQL connection failed:', err));
-
-// Optional: Create default admin user on startup (for MVP)
-
-//async function createDefaultUser() {
-  //const id_number = '36933538';
-  //const plainPassword = 'password123';
-  //const hashedPassword = bcrypt.hashSync(plainPassword, 10);
-
-   //try {
-    //await sequelize.query(
-      //`
-      //INSERT INTO Users (id_number, password)
-      //VALUES (:id_number, :password)
-      //ON CONFLICT (id_number) DO NOTHING
-      //`,
-//{
-       // replacements: {
-          //id_number,
-          //password: hashedPassword,
-        //},
-      //}
-    //);
-
-    ////console.log('Default user created (or already exists)');
-  //} catch (err) {
-    //console.error('Error creating default user:', err);
-  //}
-//}
-
-//createDefaultUser();
 
 // ==================== LOGIN ====================
 app.post('/login', async (req, res) => {
