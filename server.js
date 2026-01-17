@@ -150,7 +150,7 @@ app.post('/login', async (req, res) => {
 
   try {
 const [rows] = await sequelize.query(
-  'SELECT * FROM user WHERE id_number = :idNumber',
+  'SELECT * FROM "user" WHERE id_number = :idNumber',
   {
     replacements: { idNumber },
     type: Sequelize.QueryTypes.SELECT,
