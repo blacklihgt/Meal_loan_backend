@@ -34,9 +34,9 @@ const sequelize = new Sequelize(
   process.env.DB_PASSWORD,
 
   {
-    host: process.env.DB_HOST || 'Meal_loan_DB',
-    port: 3306,
-    dialect: 'mysql',
+    host: process.env.DB_HOST || 'dpg-d5kb0i4oud1c73eflcng-a',
+    port: 5432,
+    dialect: 'postgres',
 
     //Optional but recommended
         logging: false, // disable SQL logs
