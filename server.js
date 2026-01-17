@@ -68,7 +68,7 @@ const Users = sequelize.define('User', {
 
 const Loans = sequelize.define('Loans', {
   date_created: {type: DataTypes.DATE},
-  amount: {type: DataTypes.NUMBER},
+  amount: {type: DataTypes.INTEGER},
 
   id_number: {
     type: DataTypes.INTEGER,
