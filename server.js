@@ -109,31 +109,31 @@ await sequelize.sync({ alter: true});//dev only
 
 // Optional: Create default admin user on startup (for MVP)
 
-async function createDefaultUser() {
-  const id_number = '36933538';
-  const plainPassword = 'password123';
-  const hashedPassword = bcrypt.hashSync(plainPassword, 10);
+//async function createDefaultUser() {
+  //const id_number = '36933538';
+  //const plainPassword = 'password123';
+  //const hashedPassword = bcrypt.hashSync(plainPassword, 10);
 
-   try {
-    await sequelize.query(
-      `
-      INSERT INTO Users (id_number, password)
-      VALUES (:id_number, :password)
-      ON CONFLICT (id_number) DO NOTHING
-      `,
-      {
-        replacements: {
-          id_number,
-          password: hashedPassword,
-        },
-      }
-    );
+   //try {
+    //await sequelize.query(
+      //`
+      //INSERT INTO Users (id_number, password)
+      //VALUES (:id_number, :password)
+      //ON CONFLICT (id_number) DO NOTHING
+      //`,
+//{
+       // replacements: {
+          //id_number,
+          //password: hashedPassword,
+        //},
+      //}
+    //);
 
-    console.log('Default user created (or already exists)');
-  } catch (err) {
-    console.error('Error creating default user:', err);
-  }
-}
+    ////console.log('Default user created (or already exists)');
+  //} catch (err) {
+    //console.error('Error creating default user:', err);
+  //}
+//}
 
 createDefaultUser();
 
