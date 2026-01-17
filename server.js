@@ -83,8 +83,7 @@ const Loans = sequelize.define('Loans', {
 const clients = sequelize.define('Clients', {
   id_no: {type: DataTypes.INTEGER, unique: true},
   full_name: {type: DataTypes.STRING},
-  phone_number: {type: DataTypes.INTEGER},
-  date_created: {type: DataTypes.DATE, defaultValue: DataTypes.NO}
+  phone_number: {type: DataTypes.INTEGER}
 
 })
 
