@@ -149,8 +149,17 @@ app.post('/login', async (req, res) => {
   }
 
   try {
-    const [rows] = await db.query('SELECT * FROM users WHERE id_number= ?', [idNumber]);
-    const user = rows[0];
+const [rows] = await sequelize.query(
+  'SELECT * FROM users WHERE id_number = :idNumber',
+  {
+    replacements: { idNumber },
+    type: Sequelize.QueryTypes.SELECT,
+  }
+);
+
+const user = rows;
+
+
 
     if (!user || !bcrypt.compareSync(password, user.password)) {
       console.log('Login failed:');
