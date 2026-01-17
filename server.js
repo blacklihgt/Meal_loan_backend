@@ -59,7 +59,7 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
 })();
 
 const Users = sequelize.define('User', {
-  id_number: {type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true},
+  id_number: {type: DataTypes.INTEGER, primaryKey: true},
   password: {type: DataTypes.STRING },
   date_created: {type: DataTypes.DATE}
 })
@@ -78,6 +78,14 @@ const Loans = sequelize.define('Loans', {
     }
   }
 
+
+})
+
+const clients = sequelize.define('Clients', {
+  id_no: {type: DataTypes.INTEGER},
+  full_name: {type: DataTypes.STRING},
+  phone_number: {type: DataTypes.INTEGER},
+  date_created: {type: DataTypes.DATE, autoIncrement: true}
 
 })
 
