@@ -58,11 +58,20 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
   }
 })();
 
+
+
 const Users = sequelize.define('Users', {
   id_number: {type: DataTypes.INTEGER, primaryKey: true, unique:true},
   password: {type: DataTypes.STRING }
 })
 //module.exports = Users;
+
+const clients = sequelize.define('Clients', {
+  id_no: {type: DataTypes.INTEGER, unique: true},
+  full_name: {type: DataTypes.STRING},
+  phone_number: {type: DataTypes.INTEGER}
+
+})
 
 
 const Loans = sequelize.define('Loans', {
@@ -80,14 +89,9 @@ const Loans = sequelize.define('Loans', {
 
 })
 
-const clients = sequelize.define('Clients', {
-  id_no: {type: DataTypes.INTEGER, unique: true},
-  full_name: {type: DataTypes.STRING},
-  phone_number: {type: DataTypes.INTEGER}
 
-})
 
-await sequelize.sync({ alter: true});//dev only
+await sequelize.sync({ force: true});//dev only
 
 
 
