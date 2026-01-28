@@ -96,7 +96,7 @@ const Loans = sequelize.define('Loans', {
 
 
 
-await sequelize.sync({ force: true});//dev only
+await sequelize.sync({ force: false});//dev only
 
 
 
