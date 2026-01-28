@@ -109,14 +109,16 @@ app.post('/login', async (req, res) => {
     return res.status(400).json({ error: 'Email and password required' });
   }
 
-  try {
+try {
 const user = await Users.findOne({
   where: { id_number: idNumber }
+
 });
 
 if (!user || password !== user.password) {
+  console.log('Login failed');
   return res.status(401).json({ error: 'Invalid credentials' });
-}
+} 
 
 
 
