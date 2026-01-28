@@ -12,6 +12,8 @@ import morgan from 'morgan';
 import cors from 'cors';
 import {Sequelize, DataTypes} from 'sequelize';
 import dotenv from 'dotenv';
+import jwt from 'jsonwebtoken';
+
 dotenv.config();
 
 //require('dotenv').config();
