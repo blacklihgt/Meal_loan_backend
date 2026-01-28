@@ -14,12 +14,12 @@ import {Sequelize, DataTypes} from 'sequelize';
 import dotenv from 'dotenv';
 dotenv.config();
 
-//require('dotenv').config();
+require('dotenv').config();
 
-const jwt = require('jsonwebtoken');
+//const jwt = require('jsonwebtoken');
 
 //const PORT = 3307;
-//const JWT_SECRET_KEY = process.env.JWT_SECRET; //|| 'your-super-secret-key'; // Use env var!
+const JWT_SECRET_KEY = process.env.JWT_SECRET; //|| 'your-super-secret-key'; // Use env var!
 
 const app = express();
 
@@ -127,7 +127,7 @@ if (!user || password !== user.password) {
     // Generate JWT
     const token = jwt.sign(
       { id: user.id_number },           // payload
-      process.env.JWT_SECRET,           // secret key (store in env!)
+      JWT_SECRET_KEY,           // secret key (store in env!)
       { expiresIn: '1h' }               // optional expiry
     );
 
