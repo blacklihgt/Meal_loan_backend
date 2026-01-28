@@ -122,10 +122,10 @@ const user = rows;
 
 
 
-    if (!user || !bcrypt.compareSync(password, user.password)) {
-      console.log('Login failed:');
-      return res.status(401).json({ error: 'Invalid credentials' });
-    }
+if (!user || password !== user.password) {
+  console.log('Login failed');
+  return res.status(401).json({ error: 'Invalid credentials' });
+}
 
     const token = jwt.sign(
       { userId: user.id},
