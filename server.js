@@ -24,7 +24,12 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(cors({ origin: ['http://localhost:5173', 'https://meal-loan-react.vercel.app'] })); // Adjust to your frontend URL
+app.use(cors({
+  origin: 'https://meal-loan-react.vercel.app',  // ← your frontend URL (no trailing slash)
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],  // include OPTIONS
+  allowedHeaders: ['Content-Type', 'Authorization'],     // add any custom headers you use
+  credentials: true,   // if using cookies/sessions/auth tokens
+}));
 app.use(morgan('dev'));
 app.use(express.json());
 
