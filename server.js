@@ -110,15 +110,14 @@ app.post('/login', async (req, res) => {
   }
 
   try {
-const [rows] = await sequelize.query(
-  'SELECT * FROM "Users" WHERE id_number = :idNumber',
-  {
-    replacements: { idNumber },
-    type: Sequelize.QueryTypes.SELECT,
-  }
-);
+const user = await Users.findOne({
+  where: { id_number: idNumber }
+});
 
-const user = rows;
+if (!user || password !== user.password) {
+  return res.status(401).json({ error: 'Invalid credentials' });
+}
+
 
 
 
