@@ -12,6 +12,10 @@ import morgan from 'morgan';
 import cors from 'cors';
 import {Sequelize, DataTypes} from 'sequelize';
 import dotenv from 'dotenv';
+import jwt from 'jsonwebtoken';
+import pkg from 'pg';
+
+const {Pool} = pkg;
 dotenv.config();
 
 //require('dotenv').config();
@@ -168,8 +172,13 @@ app.post('/loans', authenticateJWT, async (req, res) => {
   if (!id_number || !amount || amount <= 0) {
     return res.status(400).json({ error: 'Valid clientId and positive amount required' });
   }
+  const db = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
+});
 
-  const connection = await db.getConnection();
+
+  const connection = await db.connect();
 
 try {
   await connection.beginTransaction();
