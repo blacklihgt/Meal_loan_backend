@@ -115,10 +115,6 @@ const user = await Users.findOne({
 
 });
 
-if (!user || password !== user.password) {
-  console.log('Login failed');
-  return res.status(401).json({ error: 'Invalid credentials' });
-} 
 
 
 
@@ -128,14 +124,15 @@ if (!user || password !== user.password) {
   return res.status(401).json({ error: 'Invalid credentials' });
 }
 
+    // Generate JWT
     const token = jwt.sign(
-      { userId: user.id},
-      JWT_SECRET_KEY,
-      { expiresIn: '24h' }
+      { id: user.id_number },           // payload
+      process.env.JWT_SECRET,           // secret key (store in env!)
+      { expiresIn: '1h' }               // optional expiry
     );
 
-    console.log('Login successful:');
-    res.json({ token });
+    console.log('Login successful for', user.id_number);
+    return res.status(200).json({ message: 'Login successful', token });
   } catch (err) {
     console.error('Login error:', err);
     res.status(500).json({ error: 'Server error' });
