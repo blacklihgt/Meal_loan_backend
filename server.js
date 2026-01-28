@@ -14,7 +14,7 @@ import {Sequelize, DataTypes} from 'sequelize';
 import dotenv from 'dotenv';
 dotenv.config();
 
-require('dotenv').config();
+//require('dotenv').config();
 
 //const jwt = require('jsonwebtoken');
 
