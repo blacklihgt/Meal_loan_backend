@@ -168,6 +168,7 @@ const authenticateJWT = (req, res, next) => {
 // Create loan
 app.post('/loans', authenticateJWT, async (req, res) => {
   const { id_number, amount } = req.body;
+  console.log('Request body: ', req.body)
 
   if (!id_number || !amount || amount <= 0) {
     return res.status(400).json({ error: 'Valid clientId and positive amount required' });
@@ -237,7 +238,7 @@ try {
   console.log(db_response)
 
 } catch (err) {
-  await connection.rollback();
+ await transaction.rollback();
 
   res.status(400).json({
     status: "error",
@@ -256,7 +257,7 @@ try {
 });
 
 // Get all loans
-app.get('/api/loans', authenticateJWT, async (req, res) => {
+app.get('/loans', authenticateJWT, async (req, res) => {
   try {
     const [rows] = await db.query(
       'SELECT id, clientId, amount, created_at AS createdAt FROM loans ORDER BY created_at DESC'
