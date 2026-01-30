@@ -259,7 +259,7 @@ try {
 // Get all loans
 app.get('/loans', authenticateJWT, async (req, res) => {
   try {
-    const [rows] = await db.query(
+    const [rows] = await connection.query(
       'SELECT id, clientId, amount, created_at AS createdAt FROM loans ORDER BY created_at DESC'
     );
     res.json(rows);
