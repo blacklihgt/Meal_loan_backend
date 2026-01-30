@@ -238,7 +238,7 @@ try {
   console.log(db_response)
 
 } catch (err) {
- await transaction.rollback();
+ await connection.rollback();
 
   res.status(400).json({
     status: "error",
