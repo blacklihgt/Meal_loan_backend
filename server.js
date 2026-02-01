@@ -164,6 +164,7 @@ const authenticateJWT = (req, res, next) => {
 };
 
 // ==================== LOAN ENDPOINTS ====================
+const connection = await db.connect();
 
 // Create loan
 app.post('/loans', authenticateJWT, async (req, res) => {
@@ -179,7 +180,7 @@ app.post('/loans', authenticateJWT, async (req, res) => {
 });
 
 
-  const connection = await db.connect();
+  
 
 try {
   await connection.beginTransaction();
