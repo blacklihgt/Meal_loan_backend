@@ -164,7 +164,6 @@ const authenticateJWT = (req, res, next) => {
 };
 
 // ==================== LOAN ENDPOINTS ====================
-const connection = await db.connect();
 
 // Create loan
 app.post('/loans', authenticateJWT, async (req, res) => {
@@ -174,37 +173,36 @@ app.post('/loans', authenticateJWT, async (req, res) => {
   if (!id_number || !amount || amount <= 0) {
     return res.status(400).json({ error: 'Valid clientId and positive amount required' });
   }
-  const db = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
-});
+
+   const transaction = await sequelize.transaction();
 
 
-  
-
+ 
 try {
-  await connection.beginTransaction();
+  
 
   console.log("Transaction has begun")
 
-  // 1️⃣ Read & lock balance
-  const [rows] = await connection.query(
-    `SELECT amount
-     FROM available_amount
-     WHERE id_number = ?
-     FOR UPDATE`,
-    [id_number]
+  //Lock and read current amount
+  const rows = await sequelize.query(
+    `SELECT amount FROM available_amount WHERE id_number = :id_number FOR UPDATE`,
+    {
+      replacements: { id_number },
+      type: Sequelize.QueryTypes.SELECT,
+      transaction
+    }
+
   );
 
   if (rows.length === 0) {
     throw new Error("Client not found");
     
   }
-
+  //Log available amount
   const availableAmount = rows[0].amount;
   console.log("Available amount is:", availableAmount)
 
-  // 2️⃣ Compute
+  //Compute new amount
   const newAvailableAmount = availableAmount - amount;
   console.log("Available amount is:", newAvailableAmount)
 
@@ -212,58 +210,66 @@ try {
     throw new Error("Insufficient available amount");
   }
 
-  // 3️⃣ Update balance
-  await connection.query(
+  await sequelize.query(
     `UPDATE available_amount
-     SET amount = ?
-     WHERE id_number = ?`,
-    [newAvailableAmount, id_number]
+    SET amount = :newAmount
+    WHERE id_number = :id_number`,
+    {
+      replacements: {
+        newAmount: newAvailableAmount,
+        id_number
+      },
+      transaction
+    }
   );
 
-  // 4️⃣ Insert loan
-  await connection.query(
+  await sequelize.query(
     `INSERT INTO loans (id_number, amount)
-     VALUES (?, ?)`,
-    [id_number, amount]
+    VALUES (:id_number, :amount)`,
+    {
+      replacements: {
+        id_number,
+        amount
+      },
+      transaction
+    }
   );
 
-  await connection.commit();
+  await transaction.commit();
+  console.log("Transaction commited");
 
-  const db_response = res.json({
+  return res.json({
     status: "success",
     message: "Loan approved",
     previousAmount: availableAmount,
     remainingAmount: newAvailableAmount
   });
 
-  console.log(db_response)
 
 } catch (err) {
- 
 
-  res.status(400).json({
+    // Rollback on error
+  await transaction.rollback();
+  console.error("Transaction rolled back:", err.message);
+
+  return res.status(400).json({
     status: "error",
     message: err.message
   });
-  console.log("QUERY COMPLETED")
-  
 
-} finally {
-  connection.release();
-  console.log("CONNECTION RELEASED")
 }
-
-
  
 });
+
 
 // Get all loans
 app.get('/loans', authenticateJWT, async (req, res) => {
   try {
-    const [rows] = await connection.query(
-      'SELECT id, clientId, amount, created_at AS createdAt FROM loans ORDER BY created_at DESC'
-    );
-    res.json(rows);
+    // Using Sequelize instead of raw MySQL connection
+    const loans = await Loans.findAll({
+      order: [['createdAt', 'DESC']]
+    });
+    res.json(loans);
   } catch (err) {
     console.error('Error fetching loans:', err);
     res.status(500).json({ error: 'Failed to fetch loans' });
