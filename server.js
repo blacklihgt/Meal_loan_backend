@@ -204,7 +204,7 @@ try {
 
   //Compute new amount
   const newAvailableAmount = availableAmount - amount;
-  console.log("Available amount is:", newAvailableAmount)
+  console.log("New Available amount is:", newAvailableAmount)
 
   if (newAvailableAmount < 0) {
     throw new Error("Insufficient available amount");
@@ -213,7 +213,7 @@ try {
   await sequelize.query(
     `UPDATE available_amount
     SET amount = :newAmount
-    WHERE id_number = :id_number`,
+    WHERE id_no = :id_number`,
     {
       replacements: {
         newAmount: newAvailableAmount,
