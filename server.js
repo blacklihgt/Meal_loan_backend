@@ -185,7 +185,7 @@ try {
 
   //Lock and read current amount
   const rows = await sequelize.query(
-    `SELECT amount FROM available_amount WHERE id_number = :id_number FOR UPDATE`,
+    `SELECT amount FROM available_amount WHERE id_no = :id_number FOR UPDATE`,
     {
       replacements: { id_number },
       type: Sequelize.QueryTypes.SELECT,
