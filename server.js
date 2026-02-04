@@ -96,10 +96,14 @@ const Loans = sequelize.define('Loans', {
   }
 
 
-})
+},
+{
+  freezeTableName: true
+}
+)
 
 
-await Loans.sync({ force: true });
+//await Loans.sync({ force: true });
 await sequelize.sync({ force: false});//dev only
 
 
