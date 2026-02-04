@@ -228,7 +228,7 @@ try {
   );
 
   await sequelize.query(
-    `INSERT INTO Loans (id_number, amount)
+    `INSERT INTO "Loans" (id_number, amount)
     VALUES (:id_number, :amount)`,
     {
       replacements: {
