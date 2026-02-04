@@ -99,7 +99,7 @@ const Loans = sequelize.define('Loans', {
 })
 
 
-
+await Loans.sync({ force: true });
 await sequelize.sync({ force: false});//dev only
 
 
