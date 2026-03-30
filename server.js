@@ -119,7 +119,7 @@ app.post('/login', async (req, res) => {
 
 try {
 const user = await Users.findOne({
-  where: { id_number: NUMBER(idNumber) }
+  where: { id_number: +idNumber }
 
 });
 
