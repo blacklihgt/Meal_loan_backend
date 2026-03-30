@@ -10,7 +10,7 @@ import mysql2 from 'mysql2';
 import bcrypt from 'bcryptjs';
 import morgan from 'morgan';
 import cors from 'cors';
-import {Sequelize, DataTypes} from 'sequelize';
+import {Sequelize, DataTypes, NUMBER} from 'sequelize';
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 import pkg from 'pg';
@@ -119,12 +119,9 @@ app.post('/login', async (req, res) => {
 
 try {
 const user = await Users.findOne({
-  where: { id_number: idNumber }
+  where: { id_number: NUMBER(idNumber) }
 
 });
-
-
-
 
 
 if (!user || password !== user.password) {
