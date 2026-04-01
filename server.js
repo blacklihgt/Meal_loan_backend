@@ -6,11 +6,10 @@
 //const { Sequelize, DataTypes } = require('sequelize');
 
 import express from 'express';
-import mysql2 from 'mysql2';
 import bcrypt from 'bcryptjs';
 import morgan from 'morgan';
 import cors from 'cors';
-import {Sequelize, DataTypes, NUMBER} from 'sequelize';
+import {Sequelize, DataTypes} from 'sequelize';
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 import pkg from 'pg';
@@ -140,7 +139,7 @@ async function createAvailableAmountTable() {
           amount INTEGER NOT NULL DEFAULT 0,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          FOREIGN KEY (id_no) REFERENCES Clients(id_no) ON DELETE CASCADE
+          FOREIGN KEY (id_no) REFERENCES "Clients"(id_no) ON DELETE CASCADE
         );
       `);
       console.log('available_amount table created successfully');
@@ -352,8 +351,8 @@ app.get('/loans', authenticateJWT, async (req, res) => {
 });
 
 // Start server
-const PORT = process.env.PORT || 5432;
-app.listen(PORT, () => {
-  console.log(`Server running on render${PORT}`);
-  //console.log(`Login: admin@example.com / password123`);
+initializeDatabase().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server running on render ${PORT}`);
+  });
 });
