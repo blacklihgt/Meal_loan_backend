@@ -351,6 +351,7 @@ app.get('/loans', authenticateJWT, async (req, res) => {
 });
 
 // Start server
+const PORT = process.env.PORT || 5432;
 initializeDatabase().then(() => {
   app.listen(PORT, () => {
     console.log(`Server running on render ${PORT}`);
