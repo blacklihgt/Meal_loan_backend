@@ -129,19 +129,14 @@ if (!user || password !== user.password) {
   return res.status(401).json({ error: 'Invalid credentials' });
 }
 
-    // Generate JWT
-    const token = jwt.sign(
-      { id: user.id_number },           // payload
-      JWT_SECRET_KEY,           // secret key (store in env!)
-      { expiresIn: '1h' }               // optional expiry
-    );
 
-    console.log('Login successful for', user.id_number);
-    return res.status(200).json({ message: 'Login successful', token });
+
   } catch (err) {
     console.error('Login error:', err);
     res.status(500).json({ error: 'Server error' });
   }
+
+ 
 });
 
 // ==================== JWT MIDDLEWARE ====================
