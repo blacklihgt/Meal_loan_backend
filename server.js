@@ -70,7 +70,8 @@ const Users = sequelize.define('Users', {
 }, {
   tableName: 'Users',
   freezeTableName: true,
-  timestamps: true  // Adds createdAt and updatedAt
+  timestamps: false
+   // Adds createdAt and updatedAt
 });
 
 const Clients = sequelize.define('Clients', {
