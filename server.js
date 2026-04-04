@@ -311,14 +311,14 @@ app.post('/loans', authenticateJWT, async (req, res) => {
       }
     );
 
-    const newLoan = await Loans.create({
+    await Loans.create({
       id_number: id_number,
       amount: amount,
       createdAt: new Date()
     }, { transaction });
 
     await transaction.commit();
-    console.log("Transaction committed", newLoan);
+    console.log("Transaction committed");
 
     return res.json({
       status: "success",
@@ -346,6 +346,7 @@ app.get('/loans', authenticateJWT, async (req, res) => {
       order: [['createdAt', 'DESC']]
     });
     res.json(loans);
+    console.log(loans)
   } catch (err) {
     console.error('Error fetching loans:', err);
     res.status(500).json({ error: 'Failed to fetch loans' });
