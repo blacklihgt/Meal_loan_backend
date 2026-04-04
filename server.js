@@ -115,7 +115,7 @@ const Loans = sequelize.define('Loans', {
 }, {
   tableName: 'Loans',
   freezeTableName: true,
-  timestamps: true
+  timestamps: false
 });
 
 // Define the available_amount table (not through Sequelize model)
