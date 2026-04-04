@@ -311,14 +311,14 @@ app.post('/loans', authenticateJWT, async (req, res) => {
       }
     );
 
-    await Loans.create({
+    const newLoan = await Loans.create({
       id_number: id_number,
       amount: amount,
       createdAt: new Date()
     }, { transaction });
 
     await transaction.commit();
-    console.log("Transaction committed");
+    console.log("Transaction committed", newLoan);
 
     return res.json({
       status: "success",
