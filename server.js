@@ -313,7 +313,8 @@ app.post('/loans', authenticateJWT, async (req, res) => {
 
     await Loans.create({
       id_number: id_number,
-      amount: amount
+      amount: amount,
+      createdAt: new Date()
     }, { transaction });
 
     await transaction.commit();
