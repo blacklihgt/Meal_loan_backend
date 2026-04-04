@@ -343,7 +343,8 @@ app.post('/loans', authenticateJWT, async (req, res) => {
 app.get('/loans', authenticateJWT, async (req, res) => {
   try {
     const loans = await Loans.findAll({
-      order: [['createdAt', 'DESC']]
+        attributes: [ 'id_number', 'amount', 'createdAt'], 
+        order: [['createdAt', 'DESC']]
     });
     res.json(loans);
     console.log(loans)
