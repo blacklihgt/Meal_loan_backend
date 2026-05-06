@@ -354,6 +354,104 @@ app.get('/loans', authenticateJWT, async (req, res) => {
   }
 });
 
+app.post('/clients', authenticateJWT, async (req, res) => {
+  const { id_no, full_name, initial_amount = 0 } = req.body;
+
+  //Validation
+  if (!id_no || !full_name) {
+    return res.status(400).json({
+      status: "error",
+      message: "id_no and full_name are required"
+    });
+  }
+
+  if (typeof phone_number === 'undefined' || isNaN(Number(phone_number))) {
+    return res.status(400).json({
+      status: "error",
+      message: "Valid phone_number is required"
+    });
+  }
+  if (initial_amount < 0) {
+    return res.status(400).json({
+      status: "error",
+      message: "initial_amount cannot be negative"
+    });
+  }
+const transaction = await sequelize.transaction();
+
+try {
+  //Check if client already exists
+  const existingClient = await Clients.findOne({
+    where: { id_no },
+    transaction
+  });
+
+  if (existingClient) {
+    await transaction.rollback();
+    return res.status(409).json({
+      status: "error",
+      message: "Client with this ID number already exists"
+    });
+  }
+
+  // Create client
+    const newClient = await Clients.create({
+      id_no,
+      full_name: full_name.trim(),
+      phone_number: Number(phone_number)
+    }, { transaction });
+
+    // Create available_amount record
+    await sequelize.query(
+      `INSERT INTO available_amount (id_no, amount, created_at, updated_at)
+       VALUES (:id_no, :amount, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+       ON CONFLICT (id_no) DO NOTHING`,
+      {
+        replacements: { 
+          id_no, 
+          amount: initial_amount 
+        },
+        transaction
+      }
+    );
+
+    await transaction.commit();
+
+    console.log(`New client onboarded: ${id_no} - ${full_name}`);
+
+    return res.status(201).json({
+      status: "success",
+      message: "Client onboarded successfully",
+      client: {
+        id_no: newClient.id_no,
+        full_name: newClient.full_name,
+        phone_number: newClient.phone_number,
+        available_amount: initial_amount
+      }
+    });
+
+  } catch (err: any) {
+    await transaction.rollback();
+    console.error("Client onboarding error:", err);
+
+    // Handle unique constraint errors gracefully
+    if (err.name === 'SequelizeUniqueConstraintError') {
+      return res.status(409).json({
+        status: "error",
+        message: "Client with this ID number already exists"
+      });
+    }
+
+    return res.status(500).json({
+      status: "error",
+      message: "Failed to onboard client"
+    });
+  }
+});
+
+
+
+
 // Start server
 const PORT = process.env.PORT || 5432;
 initializeDatabase().then(() => {
