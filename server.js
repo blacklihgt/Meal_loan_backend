@@ -430,7 +430,7 @@ try {
       }
     });
 
-  } catch (err: any) {
+  } catch (err) {
     await transaction.rollback();
     console.error("Client onboarding error:", err);
 
