@@ -355,7 +355,7 @@ app.get('/loans', authenticateJWT, async (req, res) => {
 });
 
 app.post('/clients', authenticateJWT, async (req, res) => {
-  const { id_no, full_name, initial_amount = 0 } = req.body;
+  const { id_no, full_name, phone_number, initial_amount = 0 } = req.body;
 
   //Validation
   if (!id_no || !full_name) {
